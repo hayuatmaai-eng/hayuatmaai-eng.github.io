@@ -1,2 +1,0 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./web-ELOcpO_O.js","./index-o8vNHRp9.js"])))=>i.map(i=>d[i]);
-import{i as e,t}from"./index-o8vNHRp9.js";var n=e(`Share`,{web:()=>t(()=>import(`./web-ELOcpO_O.js`).then(e=>new e.ShareWeb),__vite__mapDeps([0,1]),import.meta.url)});export{n as Share};
