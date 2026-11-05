@@ -103,6 +103,7 @@
     slides.forEach((sl, i) => {
       if (i === s) {
         sl.classList.add('active');
+        sl.dataset.f = f; // step aktif, bisa dipakai CSS: .slide[data-f="3"]
         sl._els.forEach(el => {
           const show = (+el.dataset.step || 0) <= f && (el.dataset.until == null || f <= +el.dataset.until);
           const was = el.classList.contains('in');
