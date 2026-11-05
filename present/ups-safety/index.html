@@ -30,7 +30,22 @@
   .lbl{font:500 19px var(--mono);fill:var(--mute);letter-spacing:.03em}
   .lbl.fail{fill:var(--fail)}
 
-  .caps{position:absolute;left:140px;right:140px;top:850px;height:90px}
+  .caps{position:absolute;left:140px;right:140px;top:880px;height:90px}
+  /* slide 2: lampu plant, flicker, gelap, getaran */
+  .s-chain{isolation:isolate}
+  .bgl{position:absolute;inset:0;z-index:-1;pointer-events:none}
+  .lit{background:radial-gradient(1500px 820px at 50% 38%,rgba(255,226,160,.24),transparent 72%),rgba(150,178,206,.12)}
+  .lit-part{background:radial-gradient(560px 380px at 620px 660px,rgba(255,226,160,.26),transparent 75%)}
+  .dark{background:rgba(0,0,0,.6)}
+  .flick{background:#000;opacity:0}
+  .flick.in{animation:flick 1.4s linear var(--d,0s) both}
+  @keyframes flick{0%{opacity:0}6%{opacity:.85}10%{opacity:.1}16%{opacity:.9}22%{opacity:0}34%{opacity:.6}38%{opacity:0}100%{opacity:0}}
+  .slide:has(.quake.in) .shake{animation:quake .9s cubic-bezier(.36,.07,.19,.97) .2s both,rumble .14s linear 1.1s infinite}
+  @keyframes quake{10%,90%{transform:translate(-3px,2px)}20%,80%{transform:translate(7px,-4px)}30%,50%,70%{transform:translate(-14px,7px) rotate(-.4deg)}40%,60%{transform:translate(14px,-7px) rotate(.4deg)}}
+  @keyframes rumble{25%{transform:translate(2px,-1px)}50%{transform:translate(-2px,1px)}75%{transform:translate(1px,2px)}}
+  .flame{transform-box:fill-box;transform-origin:50% 100%;animation:flame .3s ease-in-out infinite alternate}
+  @keyframes flame{to{transform:scale(1.18,1.4)}}
+  @media (prefers-reduced-motion:reduce){.slide:has(.quake.in) .shake,.flick.in,.flame{animation:none}}
   .cap{position:absolute;left:0;top:0;font-size:34px;line-height:1.35;color:#c6d0d9;max-width:1500px}
   .cap b{color:var(--ink)}
 
@@ -121,11 +136,20 @@
   </section>
 
   <!-- 2 · Kronologi -->
-  <section class="slide" data-title="Kronologi rantai kegagalan">
+  <section class="slide s-chain" data-title="Kronologi rantai kegagalan">
+    <div class="bgl lit" data-anim="fade" data-until="3"></div>
+    <div class="bgl lit-part" data-anim="fade" data-step="4" data-until="4" style="--d:.5s"></div>
+    <div class="bgl dark" data-anim="fade" data-step="5" style="--d:.9s"></div>
+    <div class="bgl flick" data-anim="fx" data-step="1" data-until="1"></div>
+    <div class="bgl flick" data-anim="fx" data-step="2" data-until="2" style="--d:.1s"></div>
+    <div class="bgl flick" data-anim="fx" data-step="4" data-until="4"></div>
+    <div class="bgl flick" data-anim="fx" data-step="5" data-until="5" style="--d:.2s"></div>
+    <span class="quake" data-anim="fx" data-step="6" data-until="6"></span>
     <p class="eyebrow" data-anim="left">01 · Apa yang terjadi</p>
-    <h2 class="h2" data-split style="--d:.15s">Satu rantai daya, <span class="fail">gagal berurutan.</span></h2>
-    <svg width="1640" height="590" viewBox="0 -30 1640 590" style="margin-top:10px">
-      <defs><path id="dep" d="M910 400 V500 H1610 V70 H1560" pathLength="1"/></defs>
+    <h2 class="h2 shake" data-split style="--d:.15s">Satu rantai daya, <span class="fail">gagal berurutan.</span></h2>
+    <svg class="shake" width="1640" height="620" viewBox="0 -30 1640 620" style="margin-top:10px">
+      <defs><path id="dep" d="M910 400 V550 H1610 V70 H1560" pathLength="1"/>
+        <path id="b1" d="M1280 400 V440"/><path id="b2" d="M1365 400 V440"/><path id="b3" d="M1450 400 V440"/></defs>
       <!-- garis -->
       <g data-anim="fade">
         <line class="wire" x1="110" y1="120" x2="110" y2="190"/><line class="wire" x1="370" y1="120" x2="370" y2="190"/>
@@ -158,8 +182,20 @@
       <g class="x" data-anim="pop" data-step="5" style="--d:.3s"><rect x="418" y="346" width="180" height="70" rx="10"/><text x="584" y="388" text-anchor="end">OPEN</text></g>
       <g class="x" data-anim="pop" data-step="6"><rect x="760" y="300" width="300" height="100" rx="16"/><text x="1056" y="290" text-anchor="end">PADAM</text></g>
       <g class="x" data-anim="pop" data-step="6" style="--d:.5s"><rect x="1200" y="300" width="330" height="100" rx="16"/><text x="1526" y="290" text-anchor="end">FAIL-SAFE · BUTA</text></g>
+      <g data-anim="fade" data-step="6" style="--d:.6s">
+        <line class="wire" x1="1280" y1="400" x2="1280" y2="440" style="stroke:var(--accent)"/><line class="wire" x1="1365" y1="400" x2="1365" y2="440" style="stroke:var(--accent)"/><line class="wire" x1="1450" y1="400" x2="1450" y2="440" style="stroke:var(--accent)"/>
+        <g fill="var(--accent)">
+          <circle r="6"><animateMotion dur=".5s" repeatCount="indefinite"><mpath href="#b1"/></animateMotion></circle>
+          <circle r="6"><animateMotion dur=".5s" begin=".15s" repeatCount="indefinite"><mpath href="#b2"/></animateMotion></circle>
+          <circle r="6"><animateMotion dur=".5s" begin=".3s" repeatCount="indefinite"><mpath href="#b3"/></animateMotion></circle>
+        </g>
+      </g>
+      <g class="node" data-anim="pop" data-step="6" style="--d:.7s"><rect class="box" x="1200" y="440" width="330" height="84" rx="16" style="stroke:var(--fail)"/>
+        <rect x="1226" y="476" width="12" height="40" rx="2" fill="#566a7e"/>
+        <path class="flame" d="M1232 474 C1218 460 1226 448 1232 436 C1238 448 1246 460 1232 474 Z" fill="#ff8a3d"/>
+        <text x="1258" y="476">Flare</text><text class="sub" x="1258" y="506">BDV + PCV fail open</text></g>
       <use href="#dep" class="dep" data-anim="draw" data-step="7"/>
-      <text class="lbl fail" x="1150" y="530" data-anim="fade" data-step="7" style="--d:.8s">permissive F&amp;G untuk start EDG hilang</text>
+      <text class="lbl fail" x="1150" y="580" data-anim="fade" data-step="7" style="--d:.8s">permissive F&amp;G untuk start EDG hilang</text>
       <g class="x" data-anim="pop" data-step="7" style="--d:1.1s"><rect x="1300" y="20" width="260" height="100" rx="16"/><text x="1556" y="10" text-anchor="end">TAK START</text></g>
     </svg>
     <div class="caps">
@@ -169,10 +205,10 @@
       <p class="cap" data-anim="up" data-step="3" data-until="3"><b>Load shedding gagal</b> menurunkan beban ke kapasitas generator yang tersisa.</p>
       <p class="cap" data-anim="up" data-step="4" data-until="4"><b>Generator terakhir ikut mati.</b> Bus utama hilang.</p>
       <p class="cap" data-anim="up" data-step="5" data-until="5"><b>UPS seharusnya mengambil alih</b>, tetapi kedua bank baterai gagal karena sel open.</p>
-      <p class="cap" data-anim="up" data-step="6" data-until="6"><b>DCS/SIS/F&amp;G padam.</b> SDV/BDV bergerak ke posisi fail-safe tanpa termonitor.</p>
+      <p class="cap" data-anim="up" data-step="6" data-until="6"><b>DCS/SIS/F&amp;G padam.</b> BDV dan PCV ke flare fail open: blowdown serentak tanpa monitoring.</p>
       <p class="cap" data-anim="up" data-step="7"><b>EDG tidak start otomatis</b>, karena permissive start dari sistem F&amp;G ikut hilang.</p>
     </div>
-    <aside class="notes"><p>Tujuh klik, satu per mata rantai. Tekankan klik 7: lapisan cadangan terakhir (EDG) ikut tumbang karena bergantung pada lapisan yang sudah gagal. Ini kegagalan penyebab bersama (common cause).</p></aside>
+    <aside class="notes"><p>Tujuh klik, satu per mata rantai. Latar terang = plant masih berlistrik; berkedip saat generator jatuh, tinggal area UPS saat generator terakhir mati, gelap total saat UPS gagal. Klik 6: blowdown serentak, layar bergetar. Tekankan klik 7: lapisan cadangan terakhir (EDG) ikut tumbang karena bergantung pada lapisan yang sudah gagal. Ini kegagalan penyebab bersama (common cause).</p></aside>
   </section>
 
   <!-- 3 · Konsekuensi -->
