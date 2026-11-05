@@ -30,7 +30,8 @@
   }
   const deckId = (document.body.dataset.deck || 'deck').replace(/[^a-z0-9-]/gi, '');
   const topic = room ? `kdeck-${deckId}-${room}` : null;
-  const mode = isPresenter ? 'presenter' : room ? 'audience' : 'solo';
+  // window.KDECK_PREVIEW = true → mode pratinjau: navigasi lokal bebas, tanpa relay.
+  const mode = window.KDECK_PREVIEW ? 'preview' : isPresenter ? 'presenter' : room ? 'audience' : 'solo';
   document.body.classList.add('mode-' + mode);
 
   /* ---------- Skala stage ---------- */
@@ -135,7 +136,7 @@
   /* ---------- Aksi lokal vs sinkron ---------- */
   let lastRemote = null;
   function go(s, f, instant = false, origin = 'local') {
-    if (mode !== 'presenter' && origin === 'local') return; // hanya presenter yang bisa pindah slide
+    if (mode !== 'presenter' && mode !== 'preview' && origin === 'local') return; // hanya presenter yang bisa pindah slide
     render(s, f, instant);
     if (mode === 'presenter' && origin === 'local') publish();
     if (mode === 'presenter') saveHash();
@@ -283,6 +284,10 @@
     waiting = el('<div id="waiting" class="hud pill">Menunggu presenter memulai…</div>');
     document.body.append(waiting);
     subscribe();
+  } else if (mode === 'preview') {
+    const hud = el(`<div id="aud-hud" class="hud"><span class="pill">Pratinjau · ← → untuk pindah</span><button class="pill" id="fs">⛶</button></div>`);
+    document.body.append(hud);
+    $('#fs').onclick = e => { e.stopPropagation(); toggleFS(); };
   } else {
     const hud = el(`<div id="aud-hud" class="hud">
       <span class="pill"><span class="dot"></span>Buka link audiens dari presenter untuk mengikuti presentasi</span>

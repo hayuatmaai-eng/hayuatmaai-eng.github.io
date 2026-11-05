@@ -147,33 +147,34 @@
       <g class="node" data-anim="scale" style="--d:.4s"><rect class="box" x="200" y="280" width="420" height="160" rx="16" style="stroke:var(--accent)"/><text x="224" y="324">UPS</text>
         <rect class="box" x="224" y="346" width="180" height="70" rx="10"/><text class="sub" x="246" y="388">Bank 1</text>
         <rect class="box" x="418" y="346" width="180" height="70" rx="10"/><text class="sub" x="440" y="388">Bank 2</text></g>
-      <g class="node" data-anim="scale" style="--d:.48s"><rect class="box" x="760" y="300" width="300" height="100" rx="16"/><text x="784" y="346">DCS / SIS</text><text class="sub" x="784" y="378">mata &amp; otak plant</text></g>
+      <g class="node" data-anim="scale" style="--d:.48s"><rect class="box" x="760" y="300" width="300" height="100" rx="16"/><text x="784" y="346">DCS / SIS / F&amp;G</text><text class="sub" x="784" y="378">mata &amp; otak plant</text></g>
       <g class="node" data-anim="scale" style="--d:.56s"><rect class="box" x="1200" y="300" width="330" height="100" rx="16"/><text x="1224" y="346">SDV / BDV</text><text class="sub" x="1224" y="378">elemen akhir di lapangan</text></g>
 
       <!-- kegagalan -->
       <g class="x" data-anim="pop" data-step="1"><rect x="0" y="20" width="220" height="100" rx="16"/><text x="216" y="10" text-anchor="end">DOWN</text></g>
       <g class="x" data-anim="pop" data-step="2"><rect x="260" y="20" width="220" height="100" rx="16"/><text x="476" y="10" text-anchor="end">TRIP</text></g>
       <g class="x" data-anim="pop" data-step="3"><rect x="800" y="20" width="260" height="100" rx="16"/><text x="1056" y="10" text-anchor="end">GAGAL</text></g>
-      <g class="x" data-anim="pop" data-step="3" style="--d:.35s"><rect x="520" y="20" width="220" height="100" rx="16"/><text x="736" y="10" text-anchor="end">TRIP</text></g>
-      <line class="bus" x1="20" y1="190" x2="1560" y2="190" style="stroke:var(--fail);--d:.6s" data-anim="fade" data-step="3"/>
-      <g class="x" data-anim="pop" data-step="4"><rect x="224" y="346" width="180" height="70" rx="10"/><text x="390" y="388" text-anchor="end">OPEN</text></g>
-      <g class="x" data-anim="pop" data-step="4" style="--d:.3s"><rect x="418" y="346" width="180" height="70" rx="10"/><text x="584" y="388" text-anchor="end">OPEN</text></g>
-      <g class="x" data-anim="pop" data-step="5"><rect x="760" y="300" width="300" height="100" rx="16"/><text x="1056" y="290" text-anchor="end">PADAM</text></g>
-      <g class="x" data-anim="pop" data-step="5" style="--d:.5s"><rect x="1200" y="300" width="330" height="100" rx="16"/><text x="1526" y="290" text-anchor="end">FAIL-SAFE · BUTA</text></g>
-      <use href="#dep" class="dep" data-anim="draw" data-step="6"/>
-      <text class="lbl fail" x="1150" y="530" data-anim="fade" data-step="6" style="--d:.8s">sinyal start EDG bergantung pada DCS/SIS</text>
-      <g class="x" data-anim="pop" data-step="6" style="--d:1.1s"><rect x="1300" y="20" width="260" height="100" rx="16"/><text x="1556" y="10" text-anchor="end">TAK START</text></g>
+      <g class="x" data-anim="pop" data-step="4"><rect x="520" y="20" width="220" height="100" rx="16"/><text x="736" y="10" text-anchor="end">MATI</text></g>
+      <line class="bus" x1="20" y1="190" x2="1560" y2="190" style="stroke:var(--fail);--d:.4s" data-anim="fade" data-step="4"/>
+      <g class="x" data-anim="pop" data-step="5"><rect x="224" y="346" width="180" height="70" rx="10"/><text x="390" y="388" text-anchor="end">OPEN</text></g>
+      <g class="x" data-anim="pop" data-step="5" style="--d:.3s"><rect x="418" y="346" width="180" height="70" rx="10"/><text x="584" y="388" text-anchor="end">OPEN</text></g>
+      <g class="x" data-anim="pop" data-step="6"><rect x="760" y="300" width="300" height="100" rx="16"/><text x="1056" y="290" text-anchor="end">PADAM</text></g>
+      <g class="x" data-anim="pop" data-step="6" style="--d:.5s"><rect x="1200" y="300" width="330" height="100" rx="16"/><text x="1526" y="290" text-anchor="end">FAIL-SAFE · BUTA</text></g>
+      <use href="#dep" class="dep" data-anim="draw" data-step="7"/>
+      <text class="lbl fail" x="1150" y="530" data-anim="fade" data-step="7" style="--d:.8s">permissive F&amp;G untuk start EDG hilang</text>
+      <g class="x" data-anim="pop" data-step="7" style="--d:1.1s"><rect x="1300" y="20" width="260" height="100" rx="16"/><text x="1556" y="10" text-anchor="end">TAK START</text></g>
     </svg>
     <div class="caps">
       <p class="cap" data-anim="up" data-until="0"><b>Desain:</b> tiga generator, load shedding, EDG dan UPS dua bank seharusnya saling menopang.</p>
       <p class="cap" data-anim="up" data-step="1" data-until="1"><b>Titik awal:</b> satu generator sudah tidak tersedia, margin daya menipis.</p>
       <p class="cap" data-anim="up" data-step="2" data-until="2"><b>Generator kedua trip.</b> Satu unit tersisa memikul seluruh beban.</p>
-      <p class="cap" data-anim="up" data-step="3" data-until="3"><b>Load shedding tidak cukup</b> menyelamatkan generator ketiga. Bus utama hilang.</p>
-      <p class="cap" data-anim="up" data-step="4" data-until="4"><b>UPS seharusnya mengambil alih</b>, tetapi kedua bank baterai gagal karena sel open.</p>
-      <p class="cap" data-anim="up" data-step="5" data-until="5"><b>DCS/SIS padam.</b> SDV/BDV bergerak ke posisi fail-safe tanpa termonitor.</p>
-      <p class="cap" data-anim="up" data-step="6"><b>EDG tidak start otomatis</b>, karena perintah start-nya bergantung pada DCS/SIS yang sudah padam.</p>
+      <p class="cap" data-anim="up" data-step="3" data-until="3"><b>Load shedding gagal</b> menurunkan beban ke kapasitas generator yang tersisa.</p>
+      <p class="cap" data-anim="up" data-step="4" data-until="4"><b>Generator terakhir ikut mati.</b> Bus utama hilang.</p>
+      <p class="cap" data-anim="up" data-step="5" data-until="5"><b>UPS seharusnya mengambil alih</b>, tetapi kedua bank baterai gagal karena sel open.</p>
+      <p class="cap" data-anim="up" data-step="6" data-until="6"><b>DCS/SIS/F&amp;G padam.</b> SDV/BDV bergerak ke posisi fail-safe tanpa termonitor.</p>
+      <p class="cap" data-anim="up" data-step="7"><b>EDG tidak start otomatis</b>, karena permissive start dari sistem F&amp;G ikut hilang.</p>
     </div>
-    <aside class="notes"><p>Enam klik, satu per mata rantai. Tekankan klik 6: lapisan cadangan terakhir (EDG) ikut tumbang karena bergantung pada lapisan yang sudah gagal. Ini kegagalan penyebab bersama (common cause).</p></aside>
+    <aside class="notes"><p>Tujuh klik, satu per mata rantai. Tekankan klik 7: lapisan cadangan terakhir (EDG) ikut tumbang karena bergantung pada lapisan yang sudah gagal. Ini kegagalan penyebab bersama (common cause).</p></aside>
   </section>
 
   <!-- 3 · Konsekuensi -->
@@ -205,9 +206,9 @@
     </div>
     <div class="side">
       <p data-anim="right" data-step="1"><b>UPS tanpa jeda.</b> Ia menjembatani detik-detik sebelum EDG masuk, dan menit-menit untuk shutdown yang terkendali.</p>
-      <p data-anim="right" data-step="2"><b>Lapisan yang tidak independen</b> bukan lapisan tambahan. Saat EDG bergantung pada DCS/SIS, gagalnya UPS menjatuhkan dua lapisan sekaligus.</p>
+      <p data-anim="right" data-step="2"><b>Lapisan yang tidak independen</b> bukan lapisan tambahan. Saat start EDG menunggu permissive F&amp;G, gagalnya UPS menjatuhkan dua lapisan sekaligus.</p>
     </div>
-    <aside class="notes"><p>Klik 1: UPS gagal, DCS/SIS ikut padam. Klik 2: EDG ikut retak karena ketergantungan sinyal start. Pesan utama: UPS dan baterainya harus dikelola seperti peralatan safety-critical.</p></aside>
+    <aside class="notes"><p>Klik 1: UPS gagal, DCS/SIS ikut padam. Klik 2: EDG ikut retak karena start-nya menunggu permissive F&amp;G. Pesan utama: UPS dan baterainya harus dikelola seperti peralatan safety-critical.</p></aside>
   </section>
 
   <!-- 5 · String seri -->
@@ -314,13 +315,13 @@
     <h2 class="h2" data-split style="--d:.15s">Perbaikan desain &amp; sistem.</h2>
     <div class="imps">
       <div class="imp" data-anim="up" data-step="1"><div class="t">Monitoring</div><h4>Pemantauan baterai online</h4><p>Tegangan, ohmic dan suhu per sel serta arus string, beralarm ke DCS dan ke panel yang tidak bergantung pada UPS itu sendiri.</p></div>
-      <div class="imp" data-anim="up" data-step="1" style="--d:.1s"><div class="t">Independensi</div><h4>Start EDG lepas dari DCS/SIS</h4><p>Kaji melalui MOC: start otomatis lewat relay undervoltage hardwired dengan baterai starter sendiri.</p></div>
+      <div class="imp" data-anim="up" data-step="1" style="--d:.1s"><div class="t">MOC</div><h4>Tombol override permissive F&amp;G</h4><p>Untuk start EDG saat blackout. Dipasang di kabinet berkunci magnetik berdaya UPS, sehingga hanya bisa dibuka saat UPS ikut padam.</p></div>
       <div class="imp" data-anim="up" data-step="1" style="--d:.2s"><div class="t">Uji end-to-end</div><h4>Ride-through saat TA</h4><p>Simulasikan hilangnya bus utama: UPS menahan beban, EDG start, beban kembali, semua tercatat.</p></div>
       <div class="imp" data-anim="up" data-step="2"><div class="t">Lingkungan</div><h4>Suhu ruang baterai</h4><p>Jaga mendekati 25 °C. Aturan praktis vendor: umur VRLA kira-kira separuh untuk tiap kenaikan 8–10 °C.</p></div>
       <div class="imp" data-anim="up" data-step="2" style="--d:.1s"><div class="t">Diversitas</div><h4>Penggantian bertahap</h4><p>Jangan ganti dua bank bersamaan atau dari batch yang sama, agar penuaan tidak serempak.</p></div>
       <div class="imp" data-anim="up" data-step="2" style="--d:.2s"><div class="t">Risiko</div><h4>Skenario hilang UPS di HAZOP/LOPA</h4><p>Termasuk kapasitas flare saat blowdown serentak seluruh plant.</p></div>
     </div>
-    <aside class="notes"><p>Klik 1: tiga perbaikan terkait langsung dengan rantai kegagalan. Klik 2: tiga perbaikan pencegahan jangka panjang.</p></aside>
+    <aside class="notes"><p>Klik 1: tiga perbaikan terkait langsung dengan rantai kegagalan. Override F&amp;G perlu prosedur: cek gas dengan detektor portabel sebelum menekan override, dan setiap pembukaan kabinet dicatat. Klik 2: tiga perbaikan pencegahan jangka panjang.</p></aside>
   </section>
 
   <!-- 10 · Roadmap -->
@@ -332,7 +333,7 @@
       <div class="stage-col" style="left:0" data-anim="up" data-step="1"><div class="pin">30</div><h4><span>≤ 30 hari</span>Ketahui kondisi</h4><ul>
         <li>Uji ohmic &amp; koneksi semua string</li><li>Uji kapasitas bank terpasang</li><li>Baseline data masuk CMMS</li><li>Verifikasi logika start EDG</li></ul></div>
       <div class="stage-col" style="left:570px" data-anim="up" data-step="2"><div class="pin">90</div><h4><span>≤ 90 hari</span>Tutup celah</h4><ul>
-        <li>Task list PM baru berlaku di CMMS</li><li>Spesifikasi &amp; pengadaan monitoring online</li><li>Perbaikan pendinginan ruang baterai</li><li>MOC independensi start EDG</li></ul></div>
+        <li>Task list PM baru berlaku di CMMS</li><li>Spesifikasi &amp; pengadaan monitoring online</li><li>Perbaikan pendinginan ruang baterai</li><li>MOC tombol override permissive F&amp;G</li></ul></div>
       <div class="stage-col" style="left:1140px" data-anim="up" data-step="3"><div class="pin">TA</div><h4><span>Turnaround berikut</span>Buktikan</h4><ul>
         <li>Uji ride-through end-to-end</li><li>Penggantian bank secara bertahap</li><li>Review flare untuk blowdown serentak</li></ul></div>
     </div>
