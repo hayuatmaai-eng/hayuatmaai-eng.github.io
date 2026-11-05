@@ -133,9 +133,9 @@
   }
 
   /* ---------- Aksi lokal vs sinkron ---------- */
-  let follow = true, lastRemote = null;
+  let lastRemote = null;
   function go(s, f, instant = false, origin = 'local') {
-    if (mode === 'audience' && origin === 'local') setFollow(false);
+    if (mode === 'audience' && origin === 'local') return; // audiens tidak bisa pindah slide sendiri
     render(s, f, instant);
     if (mode === 'presenter' && origin === 'local') publish();
     if (mode !== 'audience') saveHash();
@@ -143,7 +143,6 @@
   function saveHash() { history.replaceState(null, '', location.pathname + location.search + `#${cur.s + 1}.${cur.f}`); }
   function applyRemote(st) {
     lastRemote = st;
-    if (mode === 'audience' && !follow) return;
     const jump = st.s !== cur.s ? Math.abs(st.s - cur.s) > 1 || st.s < cur.s || st.f > 0 : Math.abs(st.f - cur.f) > 1 || st.f < cur.f;
     render(st.s, st.f, jump);
   }
@@ -218,12 +217,6 @@
   let waiting;
   function hideWaiting() { if (waiting) { waiting.remove(); waiting = null; } }
 
-  function setFollow(v) {
-    if (mode !== 'audience' || follow === v) return;
-    follow = v;
-    $('#follow').style.display = v ? 'none' : '';
-    if (v && lastRemote) render(lastRemote.s, lastRemote.f, true);
-  }
 
   let notesEl;
   function onSlideChange() {
@@ -262,13 +255,11 @@
     subscribe();
   } else if (mode === 'audience') {
     const hud = el(`<div id="aud-hud" class="hud">
-      <button class="pill primary" id="follow" style="display:none">↻ Ikuti presenter</button>
       <span class="pill"><span class="dot"></span><span id="st">Menyambung…</span></span>
       <button class="pill" id="fs" title="Layar penuh (F)">⛶</button>
     </div>`);
     document.body.append(hud);
     statusDot = $('.dot', hud); statusText = $('#st', hud);
-    $('#follow').onclick = e => { e.stopPropagation(); setFollow(true); };
     $('#fs').onclick = e => { e.stopPropagation(); toggleFS(); };
     waiting = el('<div id="waiting" class="hud pill">Menunggu presenter memulai…</div>');
     document.body.append(waiting);
