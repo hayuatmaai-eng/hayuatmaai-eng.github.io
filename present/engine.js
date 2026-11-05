@@ -3,7 +3,7 @@
  * - Semua slide = <section class="slide"> di dalam #stage (1920x1080, diskalakan ke layar).
  * - Elemen beranimasi: data-anim="up|down|left|right|scale|pop|blur|fade|draw", data-split (per kata),
  *   data-count="60" (angka naik). data-step="n" = muncul pada klik ke-n (default 0 = saat slide masuk).
- *   style="--d:.3s" = jeda.
+ *   data-until="n" = hilang lagi setelah step n (untuk keterangan yang berganti). style="--d:.3s" = jeda.
  * - Mode:  ?presenter           → buat ruang baru, kirim posisi slide
  *          ?room=XXXX           → audiens, mengikuti presenter
  *          (tanpa parameter)    → mode mandiri
@@ -103,7 +103,7 @@
       if (i === s) {
         sl.classList.add('active');
         sl._els.forEach(el => {
-          const show = (+el.dataset.step || 0) <= f;
+          const show = (+el.dataset.step || 0) <= f && (el.dataset.until == null || f <= +el.dataset.until);
           const was = el.classList.contains('in');
           el.classList.toggle('in', show);
           if (el.dataset.count != null && show && !was) runCount(el, instant);
@@ -148,17 +148,23 @@
   }
 
   /* ---------- Relay (ntfy.sh) ---------- */
-  let sendTimer = null, lastSent = 0, pubState = 'idle';
-  function publish() {
+  // Kirim posisi; kalau gagal (sinyal HP putus sesaat), ulangi otomatis dengan posisi terbaru.
+  let sendTimer = null, lastSent = 0, retries = 0;
+  function publish(delay = 0) {
     clearTimeout(sendTimer);
-    const wait = Math.max(0, 250 - (Date.now() - lastSent));
+    const wait = Math.max(delay, 250 - (Date.now() - lastSent));
     sendTimer = setTimeout(async () => {
       lastSent = Date.now();
       const body = JSON.stringify({ s: cur.s, f: cur.f, t: Date.now(), id: sid });
+      let ok = false, why = 'Relay tidak terjangkau';
       try {
         const r = await fetch(`${RELAY}/${topic}`, { method: 'POST', body });
-        setStatus(r.ok ? 'ok' : 'err', r.ok ? 'LIVE' : 'Gagal kirim (' + r.status + ')');
-      } catch { setStatus('err', 'Relay tidak terjangkau'); }
+        ok = r.ok; if (!ok) why = 'Gagal kirim (' + r.status + ')';
+      } catch {}
+      if (ok) { retries = 0; setStatus('ok', 'LIVE'); return; }
+      retries++;
+      setStatus(retries > 3 ? 'err' : 'warn', retries > 3 ? why : 'Mengirim ulang…');
+      if (retries <= 8) publish(Math.min(8000, 1000 * retries));
     }, wait);
   }
   function parseMsg(raw) {
@@ -180,15 +186,23 @@
     }
     return null;
   }
+  async function catchUp() {
+    if (mode !== 'audience') return;
+    const st = await pollLatest();
+    if (st) { hideWaiting(); if (st.s !== cur.s || st.f !== cur.f) applyRemote(st); }
+  }
   function subscribe() {
-    let es, errs = 0;
+    let es, errs = 0, lastEvent = Date.now();
     const open = () => {
+      es?.close();
+      lastEvent = Date.now();
       es = new EventSource(`${RELAY}/${topic}/sse`);
       es.onopen = async () => {
-        errs = 0; setStatus('ok', mode === 'presenter' ? 'LIVE' : 'Terhubung');
-        if (mode === 'audience') { const st = await pollLatest(); if (st) { hideWaiting(); applyRemote(st); } }
+        errs = 0; lastEvent = Date.now(); setStatus('ok', mode === 'presenter' ? 'LIVE' : 'Terhubung');
+        catchUp();
       };
       es.onmessage = e => {
+        lastEvent = Date.now();
         let ev; try { ev = JSON.parse(e.data); } catch { return; }
         if (ev.event !== 'message') return;
         const st = parseMsg(ev.message); if (!st) return;
@@ -197,10 +211,15 @@
       };
       es.onerror = () => {
         errs++;
-        setStatus(errs > 3 ? 'err' : 'warn', errs > 3 ? 'Relay terblokir? Navigasi manual' : 'Menyambung ulang…');
+        setStatus(errs > 3 ? 'err' : 'warn', errs > 3 ? 'Relay tidak terjangkau' : 'Menyambung ulang…');
       };
     };
     open();
+    // Watchdog: ntfy mengirim keepalive ±45 dtk; kalau sunyi >70 dtk, koneksi dianggap macet → sambung ulang.
+    setInterval(() => { if (Date.now() - lastEvent > 70000) { setStatus('warn', 'Menyambung ulang…'); open(); } }, 10000);
+    // Layar HP menyala lagi / jaringan kembali → sambung ulang dan kejar posisi terbaru.
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { open(); if (mode === 'presenter') publish(); } });
+    addEventListener('online', () => { open(); if (mode === 'presenter') publish(); });
   }
 
   /* ---------- HUD ---------- */
@@ -251,7 +270,7 @@
     $('#fs').onclick = e => { e.stopPropagation(); toggleFS(); };
     let idle;
     const wake = () => { hud.classList.remove('hide'); clearTimeout(idle); idle = setTimeout(() => { if (!hud.matches(':hover')) hud.classList.add('hide'); }, 3500); };
-    addEventListener('mousemove', wake); wake();
+    addEventListener('mousemove', wake); addEventListener('touchstart', wake, { passive: true }); wake();
     subscribe();
   } else if (mode === 'audience') {
     const hud = el(`<div id="aud-hud" class="hud">
