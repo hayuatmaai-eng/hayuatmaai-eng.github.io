@@ -81,8 +81,6 @@
   .col ul{list-style:none;display:grid;gap:13px}
   .col li{font-size:27px;line-height:1.35;color:#d3dbe2;padding-left:34px;position:relative}
   .col li::before{content:"";position:absolute;left:0;top:.42em;width:16px;height:16px;border:2px solid var(--accent);border-radius:4px}
-  .col li.new::after{content:"BARU";display:inline-block;margin-left:12px;font:700 14px/1 var(--mono);color:var(--accent-ink);background:var(--accent);
-    padding:4px 7px;border-radius:5px;letter-spacing:.08em;vertical-align:middle;position:relative;top:-3px}
   .col li em{font-style:normal;color:var(--mute)}
 
   /* improvement */
@@ -269,21 +267,21 @@
       <div class="col" data-anim="up" data-step="1"><h3>Bulanan <span>operator / teknisi</span></h3><ul>
         <li>Tegangan float di terminal tiap string</li>
         <li>Tegangan dan arus output charger</li>
-        <li class="new">Arus float per string</li>
-        <li class="new">Suhu ruang baterai, dicatat &amp; ditren</li>
+        <li>Arus float per string</li>
+        <li>Suhu ruang baterai, dicatat &amp; ditren</li>
         <li>Visual: bocor, retak, bengkak, korosi terminal</li>
         <li>Alarm UPS, status inverter/bypass</li>
       </ul></div>
       <div class="col" data-anim="up" data-step="2"><h3>Triwulanan <span>teknisi listrik</span></h3><ul>
         <li><em>Semua item bulanan, plus:</em></li>
         <li>Tegangan tiap sel/unit</li>
-        <li class="new">Nilai ohmic tiap sel/unit, banding baseline</li>
-        <li class="new">Suhu terminal negatif tiap sel</li>
-        <li class="new">Ambang tindakan: ohmic naik ≥20%</li>
+        <li>Nilai ohmic tiap sel/unit, banding baseline</li>
+        <li>Suhu terminal negatif tiap sel</li>
+        <li>Ambang tindakan: ohmic naik ≥20%</li>
         <li>Hasil diunggah ke CMMS sebagai tren</li>
       </ul></div>
     </div>
-    <aside class="notes"><p>Label BARU = item yang diusulkan ditambahkan; cocokkan dengan task list PM yang berlaku sekarang sebelum dipresentasikan. Interval mengacu IEEE 1188 (VRLA); untuk Ni-Cd gunakan IEEE 1106 dan manual vendor.</p></aside>
+    <aside class="notes"><p>Cocokkan usulan ini dengan task list PM yang berlaku sekarang. Interval mengacu IEEE 1188 (VRLA); untuk Ni-Cd gunakan IEEE 1106 dan manual vendor.</p></aside>
   </section>
 
   <!-- 8 · Task list 2 -->
@@ -293,17 +291,17 @@
     <div class="cols">
       <div class="col" data-anim="up" data-step="1"><h3>Tahunan <span>teknisi + vendor</span></h3><ul>
         <li><em>Semua item triwulanan, plus:</em></li>
-        <li class="new">Resistansi koneksi antar-sel &amp; terminal</li>
+        <li>Resistansi koneksi antar-sel &amp; terminal</li>
         <li>Torsi baut koneksi sesuai spesifikasi vendor</li>
-        <li class="new">Ripple AC pada sisi DC</li>
+        <li>Ripple AC pada sisi DC</li>
         <li>Uji fungsi transfer UPS sesuai prosedur vendor</li>
       </ul></div>
       <div class="col" data-anim="up" data-step="2"><h3>Uji kapasitas <span>berbeban</span></h3><ul>
-        <li class="new">Saat instalasi atau penggantian (baseline)</li>
-        <li class="new">Berkala ≤25% umur desain atau 2 tahun, mana lebih cepat</li>
-        <li class="new">Tahunan bila umur ≥85% desain atau kapasitas turun &gt;10%</li>
+        <li>Saat instalasi atau penggantian (baseline)</li>
+        <li>Berkala ≤25% umur desain atau 2 tahun, mana lebih cepat</li>
+        <li>Tahunan bila umur ≥85% desain atau kapasitas turun &gt;10%</li>
         <li>Ganti bila kapasitas &lt;80%</li>
-        <li class="new">Setelah tiap discharge nyata: cek sel &amp; waktu recharge</li>
+        <li>Setelah tiap discharge nyata: cek sel &amp; waktu recharge</li>
       </ul></div>
     </div>
     <aside class="notes"><p>Uji kapasitas adalah satu-satunya bukti bahwa waktu backup sesuai desain. Jadwalkan bank satu per satu supaya UPS tetap punya satu bank aktif selama uji.</p></aside>
