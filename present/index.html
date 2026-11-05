@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Presentasi Kinetic — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="engine.css">
+<style>
+  /* ---- gaya khusus deck ini ---- */
+  .bg-glyph{position:absolute;right:-60px;top:250px;font:700 760px/0.8 var(--font);letter-spacing:-.06em;
+    color:transparent;-webkit-text-stroke:2px #1d2a37;pointer-events:none}
+  .s-title .eyebrow{margin-bottom:56px}
+  .s-title .rule{display:block;margin:64px 0 40px}
+  .stack{display:flex;flex-direction:column;gap:28px}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:72px}
+  .card{background:linear-gradient(180deg,#121c27,#0e161f);border:1px solid var(--line);border-radius:28px;padding:44px 48px}
+  .card h3{font:500 22px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+  .card .big{font-size:150px;font-weight:700;letter-spacing:-.04em;line-height:1;margin:22px 0 4px}
+  .card .big small{font-size:44px;letter-spacing:0;color:var(--mute);margin-left:12px}
+  .card p{font-size:28px;line-height:1.4;color:#b9c4ce;max-width:640px}
+  .track{position:relative;height:56px;margin:30px 0 26px;border-bottom:2px dashed #2a3846}
+  .track i{position:absolute;left:0;top:6px;width:44px;height:44px;border-radius:12px;background:var(--hot);
+    animation:runner 2.4s infinite alternate ease-in-out}
+  .track.smooth i{background:var(--cool)}
+  .track.choppy i{animation-timing-function:steps(7,jump-none)}
+  @keyframes runner{to{left:calc(100% - 44px);transform:rotate(180deg)}}
+
+  .diagram{margin-top:30px}
+  .node rect{fill:#121c27;stroke:#2c3c4d;stroke-width:2}
+  .node.hl rect{stroke:var(--accent)}
+  .node text{fill:var(--ink);font:600 30px var(--font)}
+  .node text.sub{fill:var(--mute);font:500 19px var(--mono);letter-spacing:.06em}
+  .wire{fill:none;stroke:#3a4c5e;stroke-width:3}
+  .wire.acid{stroke:var(--accent)} .wire.sweet{stroke:var(--cool)} .wire.vent{stroke:#6b7a88}
+  .lbl{font:500 19px var(--mono);fill:var(--mute);letter-spacing:.04em}
+  .pkt{font:500 22px var(--mono);fill:var(--accent-ink)}
+  .tag{fill:var(--accent)}
+  .disc{position:absolute;right:140px;top:118px;font:500 18px var(--mono);color:var(--mute);letter-spacing:.08em;text-transform:uppercase;
+    border:1px solid var(--line);padding:10px 14px;border-radius:999px}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:90px}
+  .kpi{border-top:3px solid var(--line);padding-top:36px}
+  .kpi .n{font-size:200px;font-weight:700;letter-spacing:-.05em;line-height:.9}
+  .kpi .u{font:500 30px var(--mono);color:var(--accent);margin:18px 0 14px;letter-spacing:.06em}
+  .kpi p{font-size:30px;line-height:1.4;color:#b9c4ce;max-width:460px}
+
+  .steps{list-style:none;margin-top:64px;display:grid;gap:26px;counter-reset:st}
+  .steps li{display:grid;grid-template-columns:110px 1fr;align-items:baseline;font-size:44px;line-height:1.3;counter-increment:st}
+  .steps li::before{content:counter(st,decimal-leading-zero);font:500 34px var(--mono);color:var(--accent)}
+  .steps li span{color:var(--mute);font-size:30px;display:block;margin-top:6px}
+  .keys{display:flex;gap:14px;flex-wrap:wrap;margin-top:60px;font:500 24px var(--mono);color:var(--mute);align-items:center}
+  kbd{font:500 24px var(--mono);color:var(--ink);background:#162230;border:1px solid #2c3c4d;border-bottom-width:4px;border-radius:10px;padding:8px 14px}
+
+  .s-end{display:flex;flex-direction:column;justify-content:center}
+  .s-end .display{font-size:220px}
+  .ring{position:absolute;right:160px;top:50%;width:520px;height:520px;margin-top:-260px}
+  .ring circle{fill:none;stroke-width:3}
+  .spin{transform-origin:260px 260px;animation:spin 18s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body data-deck="demo" data-footer="Knowledge Sharing · Surface Engineering">
+<div id="stage">
+
+  <!-- 1 · Pembuka -->
+  <section class="slide s-title" data-title="Pembuka">
+    <div class="bg-glyph" data-anim="blur" style="--d:.15s">60</div>
+    <p class="eyebrow" data-anim="left">Demo · Presentasi tersinkron</p>
+    <h1 class="display" data-split style="--d:.25s">Presentasi kinetic, <span class="acc">tanpa lag.</span></h1>
+    <svg class="rule" width="760" height="6"><line data-anim="draw" pathLength="1" x1="0" y1="3" x2="760" y2="3" stroke="var(--accent)" stroke-width="6" style="--d:.9s"/></svg>
+    <p class="lede" data-anim="up" style="--d:1.15s">Animasi dirender di layar masing-masing peserta. Presenter hanya mengirim posisi slide.</p>
+    <aside class="notes"><p>Buka dengan pertanyaan: siapa yang pernah melihat animasi patah-patah saat share screen?</p><p>Tekan → untuk lanjut. Semua peserta yang membuka link audiens akan ikut berpindah.</p></aside>
+  </section>
+
+  <!-- 2 · Masalah -->
+  <section class="slide" data-title="Masalah share screen">
+    <p class="eyebrow" data-anim="left">01 · Masalahnya</p>
+    <h2 class="h2" data-split style="--d:.15s" >Share screen mengirim <span class="hot">video</span>, bukan animasi.</h2>
+    <div class="cards">
+      <div class="card" data-anim="up" data-step="1">
+        <h3>Share screen</h3>
+        <div class="big hot"><span data-count="15" data-step="1" style="--d:.3s">15</span><small>fps</small></div>
+        <div class="track choppy"><i></i></div>
+        <p>Untuk konten layar, frame rate sering turun ke kisaran 5–15 fps. Gerakan terlihat patah dan teks kabur saat transisi.</p>
+      </div>
+      <div class="card" data-anim="up" data-step="2">
+        <h3>Render di laptop peserta</h3>
+        <div class="big cool"><span data-count="60" data-step="2" style="--d:.3s">60</span><small>fps</small></div>
+        <div class="track smooth"><i></i></div>
+        <p>Setiap browser menggambar animasinya sendiri, dengan resolusi penuh dan sehalus layar peserta.</p>
+      </div>
+    </div>
+    <aside class="notes"><ul><li>Klik 1: kondisi share screen biasa.</li><li>Klik 2: render lokal. Minta peserta membandingkan dua kotak yang bergerak.</li></ul></aside>
+  </section>
+
+  <!-- 3 · Cara kerja -->
+  <section class="slide" data-title="Cara kerjanya">
+    <p class="eyebrow" data-anim="left">02 · Cara kerjanya</p>
+    <h2 class="h2" data-split style="--d:.15s">Yang dikirim hanya <span class="acc">posisi slide.</span></h2>
+    <svg class="diagram" width="1640" height="560" viewBox="0 0 1640 560">
+      <defs>
+        <path id="w1" d="M300 280 H640" pathLength="1"/>
+        <path id="w1m" d="M420 280 H520"/>
+        <path id="w2a" d="M940 280 C1080 280 1080 90 1280 90" pathLength="1"/>
+        <path id="w2b" d="M940 280 H1280" pathLength="1"/>
+        <path id="w2c" d="M940 280 C1080 280 1080 470 1280 470" pathLength="1"/>
+      </defs>
+      <g class="node hl" data-anim="scale"><rect x="40" y="210" width="260" height="140" rx="18"/><text x="70" y="275">Presenter</text><text class="sub" x="70" y="315">tekan → / clicker</text></g>
+
+      <use href="#w1" class="wire acid" data-anim="draw" data-step="1" pathLength="1"/>
+      <g class="node" data-anim="scale" data-step="1" style="--d:.5s"><rect x="640" y="200" width="300" height="160" rx="18"/><text x="672" y="268">Relay</text><text class="sub" x="672" y="308">ntfy.sh · pub/sub</text><text class="sub" x="672" y="336">tanpa akun</text></g>
+      <g data-anim="fade" data-step="1" style="--d:.9s">
+        <g><rect class="tag" x="-118" y="-26" width="236" height="52" rx="26"/><text class="pkt" x="0" y="8" text-anchor="middle">{"s":3,"f":1}</text>
+          <animateMotion dur="2.2s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".4 0 .2 1"><mpath href="#w1m"/></animateMotion></g>
+      </g>
+
+      <use href="#w2a" class="wire acid" data-anim="draw" data-step="2" pathLength="1"/>
+      <use href="#w2b" class="wire acid" data-anim="draw" data-step="2" pathLength="1" style="--d:.1s"/>
+      <use href="#w2c" class="wire acid" data-anim="draw" data-step="2" pathLength="1" style="--d:.2s"/>
+      <g class="node" data-anim="right" data-step="2" style="--d:.5s"><rect x="1280" y="30" width="320" height="120" rx="18"/><text x="1310" y="86">Audiens A</text><text class="sub" x="1310" y="122">render 60 fps</text></g>
+      <g class="node" data-anim="right" data-step="2" style="--d:.6s"><rect x="1280" y="220" width="320" height="120" rx="18"/><text x="1310" y="276">Audiens B</text><text class="sub" x="1310" y="312">render 60 fps</text></g>
+      <g class="node" data-anim="right" data-step="2" style="--d:.7s"><rect x="1280" y="410" width="320" height="120" rx="18"/><text x="1310" y="466">Audiens C</text><text class="sub" x="1310" y="502">render 60 fps</text></g>
+      <g data-anim="fade" data-step="2" style="--d:1s">
+        <circle r="9" fill="var(--accent)"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#w2a"/></animateMotion></circle>
+        <circle r="9" fill="var(--accent)"><animateMotion dur="1.6s" begin=".2s" repeatCount="indefinite"><mpath href="#w2b"/></animateMotion></circle>
+        <circle r="9" fill="var(--accent)"><animateMotion dur="1.6s" begin=".4s" repeatCount="indefinite"><mpath href="#w2c"/></animateMotion></circle>
+      </g>
+      <text class="lbl" x="40" y="430" data-anim="up" data-step="3">≈ 40 byte per perpindahan, bukan aliran video beberapa Mbps.</text>
+      <text class="lbl" x="40" y="470" data-anim="up" data-step="3" style="--d:.15s">Suara dan wajah tetap lewat Teams/Zoom.</text>
+    </svg>
+    <aside class="notes"><ul><li>Klik 1: presenter → relay.</li><li>Klik 2: relay meneruskan ke semua audiens.</li><li>Klik 3: tekankan bahwa yang dikirim sangat kecil, jadi koneksi lemah pun cukup.</li></ul></aside>
+  </section>
+
+  <!-- 4 · Contoh alur proses -->
+  <section class="slide" data-title="Contoh alur proses">
+    <p class="eyebrow" data-anim="left">03 · Contoh visual</p>
+    <h2 class="h2" data-split style="--d:.15s">Alur proses yang <span class="acc">bergerak.</span></h2>
+    <span class="disc" data-anim="fade" style="--d:.6s">Ilustrasi generik</span>
+    <svg class="diagram" width="1640" height="640" viewBox="0 0 1640 640" style="margin-top:44px">
+      <defs>
+        <path id="p1" d="M220 100 H380" pathLength="1"/>
+        <path id="p2" d="M600 100 H1420" pathLength="1"/>
+        <path id="p3" d="M490 160 V290" pathLength="1"/>
+        <path id="p4" d="M600 350 H800" pathLength="1"/>
+        <path id="p5" d="M1020 350 H1420" pathLength="1"/>
+        <path id="p6" d="M910 410 V500" pathLength="1"/>
+        <path id="p7" d="M490 410 V560 H800" pathLength="1"/>
+      </defs>
+      <!-- step 0 -->
+      <g class="node" data-anim="scale"><rect x="0" y="40" width="220" height="120" rx="16"/><text x="26" y="96">Gas umpan</text><text class="sub" x="26" y="132">sour gas</text></g>
+      <use href="#p1" class="wire acid" data-anim="draw" pathLength="1" style="--d:.3s"/>
+      <g class="node hl" data-anim="scale" style="--d:.5s"><rect x="380" y="40" width="220" height="120" rx="16"/><text x="406" y="96">AGRU</text><text class="sub" x="406" y="132">unit amina</text></g>
+      <!-- step 1 -->
+      <use href="#p2" class="wire sweet" data-anim="draw" data-step="1" pathLength="1"/>
+      <text class="lbl" x="660" y="84" data-anim="fade" data-step="1" style="--d:.4s">gas manis</text>
+      <g class="node" data-anim="left" data-step="1" style="--d:.6s"><rect x="1420" y="40" width="220" height="120" rx="16" style="stroke:var(--cool)"/><text x="1446" y="96">Sales gas</text><text class="sub" x="1446" y="132">produk</text></g>
+      <g data-anim="fade" data-step="1" style="--d:.8s" fill="var(--cool)">
+        <circle r="8"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+        <circle r="8"><animateMotion dur="2.4s" begin=".8s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+        <circle r="8"><animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+      </g>
+      <!-- step 2 -->
+      <use href="#p3" class="wire acid" data-anim="draw" data-step="2" pathLength="1"/>
+      <text class="lbl" x="510" y="232" data-anim="fade" data-step="2" style="--d:.3s">acid gas</text>
+      <g class="node hl" data-anim="scale" data-step="2" style="--d:.4s"><rect x="380" y="290" width="220" height="120" rx="16"/><text x="406" y="346">AGEU</text><text class="sub" x="406" y="382">pemekatan H₂S</text></g>
+      <!-- step 3 -->
+      <use href="#p4" class="wire acid" data-anim="draw" data-step="3" pathLength="1"/>
+      <g class="node hl" data-anim="scale" data-step="3" style="--d:.35s"><rect x="800" y="290" width="220" height="120" rx="16"/><text x="826" y="346">SRU</text><text class="sub" x="826" y="382">unit sulfur</text></g>
+      <use href="#p5" class="wire acid" data-anim="draw" data-step="3" pathLength="1" style="--d:.6s"/>
+      <g class="node" data-anim="left" data-step="3" style="--d:.9s"><rect x="1420" y="290" width="220" height="120" rx="16" style="stroke:var(--accent)"/><text x="1446" y="346">Sulfur</text><text class="sub" x="1446" y="382">produk</text></g>
+      <g data-anim="fade" data-step="3" style="--d:1s" fill="var(--accent)">
+        <circle r="8"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#p3"/></animateMotion></circle>
+        <circle r="8"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#p4"/></animateMotion></circle>
+        <circle r="8"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#p5"/></animateMotion></circle>
+        <circle r="8"><animateMotion dur="2.6s" begin="1.3s" repeatCount="indefinite"><mpath href="#p5"/></animateMotion></circle>
+      </g>
+      <!-- step 4 -->
+      <use href="#p6" class="wire vent" data-anim="draw" data-step="4" pathLength="1"/>
+      <use href="#p7" class="wire vent" data-anim="draw" data-step="4" pathLength="1" style="--d:.15s"/>
+      <text class="lbl" x="930" y="462" data-anim="fade" data-step="4" style="--d:.4s">tail gas</text>
+      <text class="lbl" x="510" y="540" data-anim="fade" data-step="4" style="--d:.5s">off-gas</text>
+      <g class="node" data-anim="up" data-step="4" style="--d:.5s"><rect x="800" y="500" width="260" height="120" rx="16"/><text x="826" y="556">Insinerator</text><text class="sub" x="826" y="592">ke stack</text></g>
+    </svg>
+    <aside class="notes"><p>Contoh cara menerangkan proses secara bertahap. Satu klik membuka satu unit.</p><ul><li>1: gas manis ke sales gas</li><li>2: acid gas ke AGEU</li><li>3: SRU dan produk sulfur</li><li>4: aliran ke insinerator</li></ul><p>Diagram ini generik, tidak memakai data plant.</p></aside>
+  </section>
+
+  <!-- 5 · Angka -->
+  <section class="slide" data-title="Angka">
+    <p class="eyebrow" data-anim="left">04 · Ringkasnya</p>
+    <h2 class="h2" data-split style="--d:.15s">Ringan untuk jaringan, halus di layar.</h2>
+    <div class="kpis">
+      <div class="kpi" data-anim="up" style="--d:.5s"><div class="n acc" data-count="60" style="--d:.6s">60</div><div class="u">fps</div><p>Animasi dirender oleh browser masing-masing peserta.</p></div>
+      <div class="kpi" data-anim="up" style="--d:.65s"><div class="n" data-count="40" style="--d:.75s">40</div><div class="u">byte / perpindahan</div><p>Isi pesan sinkron: nomor slide dan step saja.</p></div>
+      <div class="kpi" data-anim="up" style="--d:.8s"><div class="n cool" data-count="0" style="--d:.9s">0</div><div class="u">instalasi</div><p>Peserta cukup membuka satu link di browser, tanpa akun.</p></div>
+    </div>
+    <aside class="notes"><p>Angka 40 byte adalah ukuran isi pesan; ditambah header HTTP tetap jauh lebih kecil daripada video.</p></aside>
+  </section>
+
+  <!-- 6 · Cara pakai -->
+  <section class="slide" data-title="Cara pakai">
+    <p class="eyebrow" data-anim="left">05 · Cara pakai</p>
+    <h2 class="h2" data-split style="--d:.15s">Empat langkah saat sesi online.</h2>
+    <ol class="steps">
+      <li data-anim="left" data-step="1"><div>Buka link presenter di laptop Anda<span>Kode ruang dibuat otomatis.</span></div></li>
+      <li data-anim="left" data-step="2"><div>Klik "Salin link audiens", tempel di chat Teams/Zoom<span>Peserta membuka di browser masing-masing.</span></div></li>
+      <li data-anim="left" data-step="3"><div>Tetap gunakan Teams/Zoom untuk suara<span>Share screen hanya sebagai cadangan.</span></div></li>
+      <li data-anim="left" data-step="4"><div>Presentasi seperti biasa<span>Tombol → atau clicker; semua layar ikut pindah.</span></div></li>
+    </ol>
+    <div class="keys" data-anim="fade" data-step="4" style="--d:.4s"><kbd>→</kbd><kbd>←</kbd> pindah <kbd>N</kbd> catatan <kbd>F</kbd> layar penuh <kbd>H</kbd> sembunyikan panel</div>
+    <aside class="notes"><p>Peserta yang sempat menggulir sendiri akan melihat tombol "Ikuti presenter" untuk kembali sinkron.</p></aside>
+  </section>
+
+  <!-- 7 · Penutup -->
+  <section class="slide s-end" data-title="Penutup">
+    <svg class="ring" viewBox="0 0 520 520" data-anim="blur" style="--d:.3s">
+      <circle cx="260" cy="260" r="250" stroke="#1d2a37"/>
+      <g class="spin"><circle cx="260" cy="260" r="200" stroke="var(--accent)" stroke-dasharray="40 24" opacity=".7"/></g>
+      <circle cx="260" cy="260" r="140" stroke="var(--cool)" opacity=".5"/>
+    </svg>
+    <p class="eyebrow" data-anim="left">Selesai</p>
+    <h1 class="display" data-split style="--d:.2s;margin-top:40px">Terima kasih.</h1>
+    <p class="lede" data-anim="up" style="--d:.9s;margin-top:40px">Pertanyaan &amp; diskusi.</p>
+    <aside class="notes"><p>Buka sesi tanya jawab.</p></aside>
+  </section>
+
+</div>
+<script src="engine.js"></script>
+</body>
+</html>

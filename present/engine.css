@@ -1,0 +1,97 @@
+/* Kinetic Deck engine — stage 1920x1080, animasi per step, sinkron presenter→audiens */
+:root{
+  --bg:#0a0f15; --bg2:#0f1720; --panel:#131d28; --ink:#eef2f5; --mute:#8696a6; --line:#223040;
+  --accent:#f2c230; --accent-ink:#1a1400; --cool:#3fc1c9; --hot:#ff6b5b;
+  --ease:cubic-bezier(.16,.84,.24,1);
+  --font:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;color:var(--ink);overflow:hidden;font-family:var(--font);-webkit-font-smoothing:antialiased}
+body{touch-action:manipulation;user-select:none;-webkit-user-select:none}
+
+/* ---------- Stage ---------- */
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:50% 50%;
+  background:radial-gradient(1200px 800px at 85% 10%,#14202c 0%,transparent 60%),
+             radial-gradient(900px 700px at 0% 100%,#101a16 0%,transparent 55%),var(--bg);
+  overflow:hidden}
+#stage::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:80px 80px;mask-image:radial-gradient(ellipse at 60% 40%,#000 0%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse at 60% 40%,#000 0%,transparent 75%)}
+
+.slide{position:absolute;inset:0;padding:110px 140px 120px;opacity:0;visibility:hidden;
+  transition:opacity .55s ease,visibility 0s linear .55s}
+.slide.active{opacity:1;visibility:visible;transition:opacity .55s ease}
+.slide .notes{display:none}
+
+/* ---------- Chrome ---------- */
+#chrome{position:absolute;left:140px;right:140px;bottom:52px;display:flex;justify-content:space-between;
+  font:500 20px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);pointer-events:none}
+#chrome b{color:var(--ink);font-weight:500}
+#progress{position:absolute;left:0;bottom:0;height:6px;width:0;background:var(--accent);
+  transition:width .8s var(--ease)}
+
+/* ---------- Typo ---------- */
+.eyebrow{font:500 24px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.display{font-size:150px;line-height:.98;font-weight:700;letter-spacing:-.035em;max-width:1500px}
+.h2{font-size:84px;line-height:1.02;font-weight:700;letter-spacing:-.03em;max-width:1600px}
+.lede{font-size:38px;line-height:1.4;color:#c6d0d9;max-width:1200px}
+.mono{font-family:var(--mono)}
+.acc{color:var(--accent)} .cool{color:var(--cool)} .hot{color:var(--hot)} .mute{color:var(--mute)}
+
+/* ---------- Animasi ---------- */
+.slide [data-anim]{transition:transform 1s var(--ease) var(--d,0s),opacity .9s var(--ease) var(--d,0s),
+  filter .9s var(--ease) var(--d,0s)}
+[data-anim=up]{opacity:0;transform:translateY(70px)}
+[data-anim=down]{opacity:0;transform:translateY(-50px)}
+[data-anim=left]{opacity:0;transform:translateX(-90px)}
+[data-anim=right]{opacity:0;transform:translateX(90px)}
+[data-anim=scale]{opacity:0;transform:scale(.82)}
+[data-anim=pop]{opacity:0;transform:scale(.4)}
+[data-anim=blur]{opacity:0;filter:blur(18px);transform:scale(1.06)}
+[data-anim=fade]{opacity:0}
+[data-anim].in{opacity:1;transform:none;filter:none}
+/* Garis SVG yang "tergambar" — beri pathLength="1" */
+.slide [data-anim=draw]{opacity:1;transform:none;stroke-dasharray:1;stroke-dashoffset:1;
+  transition:stroke-dashoffset 1.3s var(--ease) var(--d,0s)}
+[data-anim=draw].in{stroke-dashoffset:0}
+/* SVG group transform tidak dipakai agar posisi aman */
+svg [data-anim=up],svg [data-anim=scale],svg [data-anim=pop],svg [data-anim=left],svg [data-anim=right]{transform-box:fill-box;transform-origin:center}
+
+/* Teks per kata */
+[data-split] .wm{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+[data-split] .w{display:inline-block;opacity:0;transform:translateY(105%) rotate(6deg);transform-origin:0 100%;
+  transition:transform 1s var(--ease),opacity .6s ease;transition-delay:calc(var(--d,0s) + var(--i) * 60ms)}
+[data-split].in .w{opacity:1;transform:none}
+
+/* Mode instan (lompat / audiens telat bergabung) */
+.instant *,.instant *::before,.instant *::after{transition:none !important}
+
+/* ---------- HUD ---------- */
+.hud{position:fixed;z-index:20;font:500 13px/1.2 var(--mono);letter-spacing:.04em;color:#dbe3ea}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+  background:rgba(14,20,28,.82);border:1px solid #2a3846;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.dot{width:8px;height:8px;border-radius:50%;background:#5c6b79;flex:none}
+.dot.ok{background:#3ddc84;box-shadow:0 0 0 0 rgba(61,220,132,.6);animation:ping 2s infinite}
+.dot.warn{background:var(--accent)} .dot.err{background:var(--hot)}
+@keyframes ping{70%{box-shadow:0 0 0 8px rgba(61,220,132,0)}100%{box-shadow:0 0 0 0 rgba(61,220,132,0)}}
+button.pill{cursor:pointer;color:inherit;font:inherit}
+button.pill:hover{border-color:var(--accent);color:#fff}
+button.pill.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+
+#aud-hud{top:14px;right:14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+#pres-hud{left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;
+  transition:opacity .4s ease,transform .4s ease;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 28px)}
+#pres-hud.hide{opacity:0;transform:translate(-50%,12px);pointer-events:none}
+#timer{font-variant-numeric:tabular-nums}
+#notes{position:fixed;z-index:21;top:14px;right:14px;bottom:70px;width:min(420px,calc(100vw - 28px));
+  background:rgba(12,18,25,.94);border:1px solid #2a3846;border-radius:16px;padding:20px 22px;overflow:auto;
+  font:400 17px/1.55 var(--font);color:#dbe3ea;display:none;backdrop-filter:blur(10px)}
+#notes.show{display:block}
+#notes h4{font:500 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+#notes .next{margin-top:18px;padding-top:14px;border-top:1px solid #2a3846;color:var(--mute);font-size:15px}
+#notes ul{padding-left:1.1em} #notes li{margin:.3em 0}
+#toast{position:fixed;z-index:30;left:50%;top:18px;transform:translate(-50%,-80px);transition:transform .4s var(--ease)}
+#toast.show{transform:translate(-50%,0)}
+#waiting{position:fixed;z-index:19;left:50%;bottom:22px;transform:translateX(-50%)}
