@@ -135,10 +135,10 @@
   /* ---------- Aksi lokal vs sinkron ---------- */
   let lastRemote = null;
   function go(s, f, instant = false, origin = 'local') {
-    if (mode === 'audience' && origin === 'local') return; // audiens tidak bisa pindah slide sendiri
+    if (mode !== 'presenter' && origin === 'local') return; // hanya presenter yang bisa pindah slide
     render(s, f, instant);
     if (mode === 'presenter' && origin === 'local') publish();
-    if (mode !== 'audience') saveHash();
+    if (mode === 'presenter') saveHash();
   }
   function saveHash() { history.replaceState(null, '', location.pathname + location.search + `#${cur.s + 1}.${cur.f}`); }
   function applyRemote(st) {
@@ -266,12 +266,10 @@
     subscribe();
   } else {
     const hud = el(`<div id="aud-hud" class="hud">
-      <a class="pill" href="?presenter" style="text-decoration:none;color:inherit">▶ Mulai sebagai presenter</a>
+      <span class="pill"><span class="dot"></span>Buka link audiens dari presenter untuk mengikuti presentasi</span>
       <button class="pill" id="fs">⛶</button></div>`);
     document.body.append(hud);
     $('#fs').onclick = e => { e.stopPropagation(); toggleFS(); };
-    let idle; const wake = () => { hud.style.opacity = 1; clearTimeout(idle); idle = setTimeout(() => hud.style.opacity = 0, 2500); };
-    hud.style.transition = 'opacity .4s'; addEventListener('mousemove', wake); wake();
   }
 
   function toggleFS() {
@@ -308,7 +306,7 @@
 
   /* ---------- Mulai ---------- */
   const m = location.hash.match(/^#(\d+)(?:\.(\d+))?$/);
-  const start = m && mode !== 'audience' ? [+m[1] - 1, +(m[2] || 0)] : [0, 0];
+  const start = m && mode === 'presenter' ? [+m[1] - 1, +(m[2] || 0)] : [0, 0];
   render(start[0], start[1], start[0] > 0 || start[1] > 0);
   if (mode === 'presenter') setTimeout(publish, 400);
   document.fonts?.ready.then(fit);

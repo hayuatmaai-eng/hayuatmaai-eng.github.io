@@ -4,7 +4,7 @@ Presentasi HTML beranimasi yang disinkronkan dari presenter ke audiens. Animasi 
 
 - Presenter: `https://hayuatmaai-eng.github.io/present/?presenter` → klik **Salin link audiens**, tempel di chat Teams/Zoom.
 - Audiens: `.../present/?room=KODE` (tanpa akun). Layar audiens terkunci mengikuti presenter; tombol, klik dan geser tidak memindahkan slide.
-- Mandiri: `.../present/`
+- Tanpa kode ruang (`.../present/`): hanya menampilkan slide pembuka, navigasi terkunci.
 
 Kontrol: → ← / clicker / klik / geser · `N` catatan · `F` layar penuh · `H` sembunyikan panel · Home/End.
 Membuka link presenter di perangkat kedua (mis. HP) dengan URL yang sama juga bisa dipakai sebagai remote.
