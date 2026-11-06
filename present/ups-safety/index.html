@@ -50,6 +50,20 @@
   .cap{position:absolute;left:0;top:0;font-size:34px;line-height:1.35;color:#c6d0d9;max-width:1500px}
   .cap b{color:var(--ink)}
 
+  /* slide 3: operator dalam gelap */
+  .s-dark{isolation:isolate}
+  .s-dark .dark-all{position:absolute;inset:0;z-index:-2;background:radial-gradient(900px 700px at 78% 70%,rgba(0,0,0,.35),rgba(0,0,0,.78))}
+  .s-dark .grid4{width:1120px;gap:28px}
+  .s-dark .card{background:rgba(12,18,26,.78);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:32px 36px}
+  .s-dark .card p{font-size:27px}
+  .s-dark .card .k{font-size:54px}
+  .scene{position:absolute;right:40px;bottom:70px;width:640px;height:820px;z-index:-1}
+  .beam{animation:beam 3.2s ease-in-out infinite}
+  @keyframes beam{0%,100%{opacity:1}46%{opacity:.92}48%{opacity:.55}50%{opacity:.95}53%{opacity:.7}55%{opacity:1}}
+  .mote{animation:mote 6s ease-in-out infinite}
+  @keyframes mote{0%{transform:translate(0,0);opacity:0}20%{opacity:.9}100%{transform:translate(-40px,-60px);opacity:0}}
+  .breath{transform-box:fill-box;transform-origin:50% 100%;animation:breath 4.5s ease-in-out infinite}
+  @keyframes breath{50%{transform:scaleY(1.018) translateY(-2px)}}
   /* kartu konsekuensi */
   .grid4{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:60px}
   .card{background:linear-gradient(180deg,#121c27,#0e161f);border:1px solid var(--line);border-radius:26px;padding:38px 44px;position:relative}
@@ -212,7 +226,53 @@
   </section>
 
   <!-- 3 · Konsekuensi -->
-  <section class="slide" data-title="Konsekuensi">
+  <section class="slide s-dark" data-title="Konsekuensi">
+    <div class="dark-all"></div>
+    <svg class="scene" viewBox="0 0 640 820" data-anim="fade" style="--d:.3s" aria-hidden="true">
+      <defs>
+        <linearGradient id="beamG" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffe2a8" stop-opacity=".55"/><stop offset="1" stop-color="#ffe2a8" stop-opacity=".04"/>
+        </linearGradient>
+        <radialGradient id="spotG"><stop offset="0" stop-color="#ffd890" stop-opacity=".5"/><stop offset="1" stop-color="#ffd890" stop-opacity="0"/></radialGradient>
+        <radialGradient id="glowG"><stop offset="0" stop-color="#fff3d6" stop-opacity=".9"/><stop offset="1" stop-color="#fff3d6" stop-opacity="0"/></radialGradient>
+        <linearGradient id="bodyG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a4654"/><stop offset=".35" stop-color="#1a232d"/><stop offset="1" stop-color="#121920"/></linearGradient>
+      </defs>
+      <!-- lantai -->
+      <line x1="60" y1="712" x2="640" y2="712" stroke="#1d2833" stroke-width="2"/>
+      <!-- sorot senter -->
+      <g class="beam">
+        <path d="M376 566 L386 584 L330 724 L40 724 L40 700 Z" fill="url(#beamG)"/>
+        <ellipse cx="210" cy="716" rx="165" ry="26" fill="url(#spotG)"/>
+        <circle cx="381" cy="574" r="22" fill="url(#glowG)"/>
+      </g>
+      <g fill="#ffe9be">
+        <circle class="mote" cx="300" cy="640" r="2.2"/>
+        <circle class="mote" cx="240" cy="676" r="1.8" style="animation-delay:1.4s"/>
+        <circle class="mote" cx="180" cy="690" r="2" style="animation-delay:2.8s"/>
+        <circle class="mote" cx="330" cy="610" r="1.6" style="animation-delay:4.1s"/>
+      </g>
+      <!-- operator duduk menunduk -->
+      <g class="breath">
+        <!-- kaki: paha & betis -->
+        <path d="M528 698 L432 612" stroke="url(#bodyG)" stroke-width="54" stroke-linecap="round" fill="none"/>
+        <path d="M432 612 L414 704" stroke="#18212a" stroke-width="44" stroke-linecap="round" fill="none"/>
+        <path d="M398 712 h56" stroke="#141b22" stroke-width="18" stroke-linecap="round"/>
+        <!-- badan membungkuk -->
+        <path d="M560 706 C594 640 580 552 520 500 C496 480 462 486 452 512 C470 560 488 640 500 706 Z" fill="url(#bodyG)"/>
+        <!-- reflective stripe coverall -->
+        <path d="M478 590 C510 584 548 588 578 600" stroke="#7d8a5a" stroke-width="7" fill="none" opacity=".55"/>
+        <!-- lengan bertumpu di lutut, tangan memegang senter -->
+        <path d="M486 520 L436 590 L398 572" stroke="#1f2933" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="364" y="562" width="34" height="16" rx="4" transform="rotate(28 381 570)" fill="#59636e"/>
+        <!-- kepala menunduk + helm -->
+        <circle cx="452" cy="478" r="30" fill="#1c252f"/>
+        <path d="M414 470 C416 440 446 424 474 432 C496 438 506 456 504 474 Z" fill="#c9a227"/>
+        <path d="M404 474 C430 480 486 482 512 470" stroke="#b08d1f" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <!-- cahaya pantul di sisi yang menghadap senter -->
+        <path d="M436 596 C424 620 418 650 414 690" stroke="#ffd890" stroke-width="3" fill="none" opacity=".35"/>
+        <path d="M424 488 C420 500 424 512 432 520" stroke="#ffd890" stroke-width="3" fill="none" opacity=".3"/>
+      </g>
+    </svg>
     <p class="eyebrow" data-anim="left">02 · Dampaknya</p>
     <h2 class="h2" data-split style="--d:.15s">Plant aman secara desain, tapi <span class="fail">tanpa kendali.</span></h2>
     <div class="grid4">
