@@ -1,0 +1,125 @@
+/**
+ * Kebun Ilmu Kelas 2 — penyimpan progres anak di Google Sheet.
+ *
+ * CARA PASANG (sekali saja, lewat browser — di HP pakai Chrome mode "Situs desktop"):
+ * 1. Buka script.google.com → New project (Proyek baru).
+ * 2. Hapus isi Code.gs, tempel SELURUH kode ini, klik ikon Simpan.
+ * 3. Pilih fungsi "setup" di bar atas → klik Run → izinkan akses
+ *    (Review permissions → pilih akun → Advanced → Go to ... (unsafe) → Allow).
+ *    Ini membuat Google Sheet "Progres Kebun Ilmu" di Drive Bapak secara otomatis.
+ * 4. Klik Deploy → New deployment → ikon roda → Web app.
+ *      Execute as: Me
+ *      Who has access: Anyone
+ *    Klik Deploy.
+ * 5. Salin "Web app URL" (berakhiran /exec) dan kirim ke Claude.
+ *
+ * (Bisa juga dipasang dari dalam Google Sheet versi web: Extensions → Apps Script; langkah 2–5 sama.)
+ * Data tersimpan di sheet "progress": satu baris per anak (kunci dari nama+PIN, nama, data progres, waktu update).
+ */
+const SHEET_NAME = 'progress';
+
+function spreadsheet_() {
+  // Bila script dipasang dari dalam Google Sheet, pakai Sheet itu.
+  const active = SpreadsheetApp.getActiveSpreadsheet();
+  if (active) return active;
+  // Bila dipasang dari script.google.com, buat Sheet "Progres Kebun Ilmu" sekali, lalu ingat ID-nya.
+  const props = PropertiesService.getScriptProperties();
+  const id = props.getProperty('SHEET_ID');
+  if (id) { try { return SpreadsheetApp.openById(id); } catch (err) {} }
+  const ss = SpreadsheetApp.create('Progres Kebun Ilmu');
+  props.setProperty('SHEET_ID', ss.getId());
+  return ss;
+}
+
+/* Jalankan fungsi ini sekali dari editor (tombol Run) untuk memberi izin dan membuat Sheet-nya. */
+function setup() {
+  const ss = spreadsheet_();
+  sheet_();
+  Logger.log('Sheet progres: ' + ss.getUrl());
+}
+
+function sheet_() {
+  const ss = spreadsheet_();
+  let s = ss.getSheetByName(SHEET_NAME);
+  if (!s) {
+    s = ss.insertSheet(SHEET_NAME);
+    s.appendRow(['kunci', 'nama', 'data', 'diperbarui']);
+    s.setFrozenRows(1);
+  }
+  return s;
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function findRow_(s, key) {
+  const last = s.getLastRow();
+  if (last < 2) return 0;
+  const keys = s.getRange(2, 1, last - 1, 1).getValues();
+  for (let i = 0; i < keys.length; i++) if (keys[i][0] === key) return i + 2;
+  return 0;
+}
+
+function doGet(e) {
+  const p = (e && e.parameter) || {};
+  const s = sheet_();
+  if (p.action === 'list') {
+    const last = s.getLastRow();
+    const names = last < 2 ? [] : s.getRange(2, 2, last - 1, 1).getValues().map(r => String(r[0])).filter(Boolean);
+    return json_({ ok: true, names: Array.from(new Set(names)) });
+  }
+  if (p.action === 'get') {
+    const r = findRow_(s, String(p.key || ''));
+    if (!r) return json_({ ok: true, exists: false });
+    let data = {};
+    try { data = JSON.parse(s.getRange(r, 3).getValue() || '{}'); } catch (err) {}
+    return json_({ ok: true, exists: true, name: s.getRange(r, 2).getValue(), data: data });
+  }
+  return json_({ ok: true, app: 'kebun-ilmu' });
+}
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    const b = JSON.parse(e.postData.contents);
+    if (b.action !== 'set' || !b.key || !b.data) return json_({ ok: false, error: 'permintaan tidak valid' });
+    const s = sheet_();
+    const r = findRow_(s, String(b.key));
+    let merged = b.data;
+    if (r) {
+      try { merged = merge_(JSON.parse(s.getRange(r, 3).getValue() || '{}'), b.data); } catch (err) {}
+    }
+    const text = JSON.stringify(merged);
+    if (text.length > 49000) return json_({ ok: false, error: 'data terlalu besar' });
+    const name = String(b.name || '').slice(0, 40);
+    if (r) s.getRange(r, 2, 1, 3).setValues([[name, text, new Date()]]);
+    else s.appendRow([String(b.key), name, text, new Date()]);
+    return json_({ ok: true, data: merged });
+  } catch (err) {
+    return json_({ ok: false, error: String(err) });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/* Gabungkan dua progres: per soal ambil jawaban yang paling baru (q[id] = [dicoba, benarBeruntun, salah, hafal, waktuDetik]). */
+function dayVal_(d) { if (!d) return 0; const a = String(d).split('-').map(Number); return new Date(a[0], a[1] - 1, a[2]).getTime(); }
+function merge_(a, b) {
+  const out = Object.assign({}, a, b);
+  out.q = Object.assign({}, a.q || {});
+  Object.keys(b.q || {}).forEach(k => {
+    const x = out.q[k], v = b.q[k];
+    if (!x || (v[4] || 0) > (x[4] || 0)) out.q[k] = v;
+  });
+  out.bonus = Math.max(a.bonus || 0, b.bonus || 0);
+  out.sessions = Math.max(a.sessions || 0, b.sessions || 0);
+  const da = dayVal_(a.lastDay), db = dayVal_(b.lastDay);
+  if (db > da) { out.lastDay = b.lastDay; out.streak = b.streak || 0; }
+  else if (db === da) { out.lastDay = a.lastDay; out.streak = Math.max(a.streak || 0, b.streak || 0); }
+  else { out.lastDay = a.lastDay; out.streak = a.streak || 0; }
+  const A = a.daily || { d: '', n: 0 }, B = b.daily || { d: '', n: 0 };
+  out.daily = A.d === B.d ? { d: A.d, n: Math.max(A.n || 0, B.n || 0) } : (dayVal_(B.d) > dayVal_(A.d) ? B : A);
+  return out;
+}
