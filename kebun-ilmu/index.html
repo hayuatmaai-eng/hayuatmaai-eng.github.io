@@ -286,7 +286,7 @@ function ansHTML(s){ return isAr(s) ? `<span class="ar">${esc(s)}</span>` : txt(
 
 /* ---------- storage ---------- */
 const KEY_OLD="kebun-ilmu-kelas2-v1", KEY_PROF="kebun-ilmu-profiles", KEY_ST="kebun-ilmu-state:";
-const SYNC_URL = "";
+const SYNC_URL = "https://script.google.com/macros/s/AKfycbweXfxCPKTXogmaSAej_HOnY9s3IOz0l0HnVZ_Ja2IIXOo5auvYdPcZHloZOWDG71ni/exec";
 let P; try { P = JSON.parse(localStorage.getItem(KEY_PROF)) || null; } catch(e) { P = null; }
 if (!P || !Array.isArray(P.list)) P = {list:[], cur:"", mute:false};
 const blankState = () => ({q:{}, bonus:0, sessions:0, streak:0, lastDay:"", daily:{d:"",n:0}});
